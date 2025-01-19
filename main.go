@@ -2,24 +2,20 @@ package main
 
 import (
 	"fmt"
-	"go-rest-api-with-postgres/internal/app"
-	"go-rest-api-with-postgres/internal/router"
+	"go-rest-api-with-postgres/internal/config"
 	"net/http"
 )
 
 func main() {
-	routes := http.NewServeMux()
-	root := app.NewRootController()
-	config := router.RouterConfig{
-		H:    routes,
-		Root: root,
-	}
+	app := http.NewServeMux()
 
-	config.Router()
+	config.Register(&config.RegisterConfig{
+		App: app,
+	})
 
 	server := http.Server{
 		Addr:    "localhost:8080",
-		Handler: routes,
+		Handler: app,
 	}
 
 	fmt.Printf("server running at http://%s \n\n", server.Addr)

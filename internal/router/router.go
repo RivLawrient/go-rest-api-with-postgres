@@ -1,18 +1,19 @@
 package router
 
 import (
-	"go-rest-api-with-postgres/internal/app"
+	"fmt"
 	"net/http"
 )
 
 type RouterConfig struct {
-	H    *http.ServeMux
-	Root *app.RootController
+	Routing *http.ServeMux
 }
 
 // membungkus semua endpoint yang dibuat.
 // menghindari penggunaan root endpoint ("/") agar menghasilkan 404 page not found.
-func (c *RouterConfig) Router() {
-	c.H.HandleFunc("/hello", c.Root.RootHandler)
-	c.H.HandleFunc("/lol", c.Root.Bru)
+func (c *RouterConfig) Route() {
+
+	c.Routing.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("/hello")
+	})
 }
