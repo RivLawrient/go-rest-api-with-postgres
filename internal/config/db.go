@@ -33,7 +33,7 @@ func GetConnection() *sql.DB {
 			host, username, password, database, port, "disable",
 		)
 	}
-	
+
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		panic(err)
