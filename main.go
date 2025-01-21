@@ -18,6 +18,8 @@ func main() {
 		Handler: app,
 	}
 
+	viper := config.NewViper()
+	fmt.Println(viper.GetString("AKU"))
 	fmt.Printf("server running at http://%s \n\n", server.Addr)
 	err := server.ListenAndServe()
 	if err != nil {
