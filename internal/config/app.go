@@ -13,7 +13,7 @@ type RegisterConfig struct {
 
 // register parameter yang dibutuhkan pada setiap app
 func Register(cfg *RegisterConfig) {
-	
+
 	config := router.RouterConfig{
 		Routing: cfg.App,
 	}

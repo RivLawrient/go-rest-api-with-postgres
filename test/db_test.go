@@ -1,4 +1,4 @@
-package test
+package main
 
 import (
 	"go-rest-api-with-postgres/internal/config"
@@ -8,7 +8,9 @@ import (
 )
 
 func TestDB(t *testing.T) {
-	db := config.GetConnection()
+	vp := config.NewViper()
+
+	db := config.GetConnection(vp)
 	defer db.Close()
 
 	err := db.Ping()

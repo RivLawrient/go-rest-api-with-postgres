@@ -6,18 +6,19 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 )
 
-func GetConnection() *sql.DB {
-	username := "lawrient"
-	password := ""
-	host := "localhost"
-	port := 5432
-	database := "money_management"
-	maxIdleConnection := 10
-	maxOpenConns := 100
-	connMaxIdleTime := 5  // in minute
-	connMaxLifetime := 60 // in minute
+func GetConnection(viper *viper.Viper) *sql.DB {
+	username := viper.GetString("DB_USERNAME")
+	password := viper.GetString("DB_PASSWORD")
+	host := viper.GetString("DB_HOST")
+	port := viper.GetInt("DB_PORT")
+	database := viper.GetString("DB_NAME")
+	maxIdleConnection := viper.GetInt("DB_MAX_IDLE_CONSS")
+	maxOpenConns := viper.GetInt("DB_MAX_OPEN_CONNS")
+	connMaxIdleTime := viper.GetInt("DB_CONN_MAX_IDLE") // in minute
+	connMaxLifetime := viper.GetInt("DB_CONN_MAX_LIFE") // in minute
 
 	var dsn string
 	if password == "" {

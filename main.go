@@ -8,18 +8,15 @@ import (
 
 func main() {
 	app := http.NewServeMux()
+	viper := config.NewViper()
+	db := config.GetConnection(viper)
+	server := config.NewServer(viper, app)
 
 	config.Register(&config.RegisterConfig{
 		App: app,
+		Db:  db,
 	})
 
-	server := http.Server{
-		Addr:    "localhost:8080",
-		Handler: app,
-	}
-
-	viper := config.NewViper()
-	fmt.Println(viper.GetString("AKU"))
 	fmt.Printf("server running at http://%s \n\n", server.Addr)
 	err := server.ListenAndServe()
 	if err != nil {
