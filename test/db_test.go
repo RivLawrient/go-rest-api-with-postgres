@@ -7,6 +7,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,7 +36,7 @@ func TestRepo(t *testing.T) {
 		group.Add(1)
 		go func() {
 			db := config.GetConnection(vp)
-			wallet.NewWalletRepository().Create(db, data)
+			wallet.NewWalletRepository().Create(db, uuid.New().String(), data)
 		}()
 
 	}
