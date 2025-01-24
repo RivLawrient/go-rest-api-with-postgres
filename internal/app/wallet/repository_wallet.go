@@ -2,23 +2,21 @@ package wallet
 
 import (
 	"database/sql"
-	"log"
 )
 
 type WalletRepository struct {
+	Db *sql.DB
 }
 
-func NewWalletRepository() *WalletRepository {
-	return &WalletRepository{}
-}
-
-func (w *WalletRepository) Create(db *sql.DB, id string, request *NewWalletRequest) {
-	query := "INSERT INTO wallet(id, bank_name, description) VALUES($1, $2, $3)"
-	result, err := db.Exec(query, id, request.BankName, request.Description)
-
-	if err != nil {
-		log.Println(err)
+func NewWalletRepository(db *sql.DB) *WalletRepository {
+	return &WalletRepository{
+		Db: db,
 	}
+}
 
-	log.Println(result.RowsAffected())
+func (w *WalletRepository) Create(id string, request *NewWalletRequest) error {
+	query := "INSERT INTO wallet(id, bank_name, description) VALUES($1, $2, $3)"
+	_, err := w.Db.Exec(query, id, request.BankName, request.Description)
+
+	return err
 }
