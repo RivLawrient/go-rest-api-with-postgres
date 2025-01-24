@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-// membungkus fungsi Handle di berbagai method
+// membungkus fungsi Handle di method yang dibutuhkan
 type MethodHandlers struct {
 	get    func(http.ResponseWriter, *http.Request)
 	post   func(http.ResponseWriter, *http.Request)
@@ -47,7 +47,6 @@ func (c *RouterConfig) Route() {
 
 	walletHandle := &MethodHandlers{
 		post: c.WalletController.HandleNewWallet,
-		get:  c.WalletController.Handle,
 	}
 	c.Routing.HandleFunc("/wallet", walletHandle.Handle)
 
