@@ -2,7 +2,6 @@ package wallet
 
 import (
 	"encoding/json"
-	"go-rest-api-with-postgres/internal/helper"
 	"go-rest-api-with-postgres/internal/model"
 	"net/http"
 	"strings"
@@ -17,11 +16,18 @@ func NewWalletController(walletUsecase *WalletUsecase) *WalletController {
 		WalletUsecase: walletUsecase,
 	}
 }
+func (w *WalletController) Handle(res http.ResponseWriter, req *http.Request) {
+	// if helper.ValidateMethod(res, req, "GET") {
+	// 	return
+	// }
+	res.WriteHeader(http.StatusOK)
+	res.Write([]byte("berhasil"))
+}
 
 func (w *WalletController) HandleNewWallet(res http.ResponseWriter, req *http.Request) {
-	if helper.ValidateMethod(res, req, "POST") {
-		return
-	}
+	// if helper.ValidateMethod(res, req, "POST") {
+	// 	return
+	// }
 
 	res.Header().Set("Content-Type", "application/json")
 
