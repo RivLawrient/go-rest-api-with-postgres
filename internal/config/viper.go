@@ -9,8 +9,8 @@ import (
 func NewViper() *viper.Viper {
 	config := viper.New()
 
-	config.SetConfigFile("../.env")
-	// config.AddConfigPath("../")
+	config.SetConfigFile(".env")
+	config.AddConfigPath("../")
 
 	err := config.ReadInConfig()
 	if err != nil {
