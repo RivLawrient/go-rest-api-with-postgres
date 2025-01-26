@@ -10,7 +10,7 @@ import (
 )
 
 func TestCreate(t *testing.T) {
-	vp := config.NewViper()
+	vp := TesViper()
 	db := config.GetConnection(vp)
 	req := wallet.NewWalletRequest{
 		BankName:    "bca",

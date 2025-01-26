@@ -20,3 +20,10 @@ func (w *WalletRepository) Create(id string, request *NewWalletRequest) error {
 
 	return err
 }
+
+func (w *WalletRepository) DeleteById(id string) error {
+	query := "DELETE FROM wallet WHERE id=$1"
+	_, err := w.Db.Exec(query, id)
+
+	return err
+}
