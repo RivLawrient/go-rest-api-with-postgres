@@ -41,3 +41,28 @@ func TestFindById(t *testing.T) {
 
 	fmt.Println(id, result.BankName, result.Description, result.Balance)
 }
+
+func TestDeleteByIdSuccess(t *testing.T) {
+	vp := TesViper()
+	db := config.GetConnection(vp)
+	req := wallet.NewWalletRequest{
+		BankName:    "bca",
+		Description: "tabungan",
+	}
+	id := uuid.New().String()
+
+	err := wallet.NewWalletRepository(db).Create(id, &req)
+	assert.Nil(t, err)
+
+	err = wallet.NewWalletRepository(db).DeleteById(id)
+	assert.Nil(t, err)
+}
+
+func TestDeleteByIdFail(t *testing.T) {
+	vp := TesViper()
+	db := config.GetConnection(vp)
+
+	err := wallet.NewWalletRepository(db).DeleteById("notfound")
+	fmt.Println(err)
+	assert.NotNil(t, err)
+}

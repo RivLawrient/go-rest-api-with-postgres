@@ -41,7 +41,10 @@ func (w *WalletRepository) FindById(id string) (*Wallet, error) {
 }
 func (w *WalletRepository) DeleteById(id string) error {
 	query := "DELETE FROM wallet WHERE id=$1"
-	_, err := w.Db.Exec(query, id)
+	result, err := w.Db.Exec(query, id)
+	if n, _ := result.RowsAffected(); n == 0 {
+		return sql.ErrNoRows
+	}
 
 	return err
 }
