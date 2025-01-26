@@ -31,3 +31,7 @@ func (w *WalletUsecase) NewWallet(request *NewWalletRequest) (*NewWalletResponse
 		Balance:     0,
 	}, nil
 }
+
+func (w *WalletUsecase) RemoveWallet(id string) {
+	
+}
