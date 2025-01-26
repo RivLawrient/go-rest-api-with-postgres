@@ -1,7 +1,6 @@
 package wallet
 
 import (
-	"database/sql"
 	"strings"
 
 	"github.com/google/uuid"
@@ -34,9 +33,7 @@ func (w *WalletUsecase) NewWallet(request *NewWalletRequest) (*NewWalletResponse
 }
 
 func (w *WalletUsecase) RemoveWallet(id string) error {
-	_, err := w.WalletRepository.FindById(id)
-	if err != sql.ErrNoRows {
-		return err
-	}
+	err := w.WalletRepository.DeleteById(id)
+
 	return err
 }
