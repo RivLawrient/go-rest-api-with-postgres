@@ -53,6 +53,15 @@ func TestFindByIdFail(t *testing.T) {
 	fmt.Println(err)
 }
 
+func TestFindAll(t *testing.T) {
+	vp := TesViper()
+	db := config.GetConnection(vp)
+
+	result, err := wallet.NewWalletRepository(db).FindAll()
+	assert.Nil(t, err)
+
+	fmt.Println(result)
+}
 func TestDeleteByIdSuccess(t *testing.T) {
 	vp := TesViper()
 	db := config.GetConnection(vp)

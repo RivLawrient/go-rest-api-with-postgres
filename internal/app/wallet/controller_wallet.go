@@ -111,13 +111,39 @@ func (w *WalletController) HandleShowById(res http.ResponseWriter, req *http.Req
 
 		res.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(res).Encode(model.WebResponse[string]{
-			Errors: "something error when remove data",
+			Errors: "something error when getting data",
 		})
 		return
 	}
 
 	res.WriteHeader(http.StatusOK)
 	json.NewEncoder(res).Encode(model.WebResponse[ShowWalletResponse]{
+		Data: *result,
+	})
+}
+
+func (w *WalletController) HandleShowAll(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+
+	result, err := w.WalletUsecase.ShowAll()
+	if err != nil {
+		if err == sql.ErrNoRows {
+			res.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(res).Encode(model.WebResponse[string]{
+				Errors: "data is not found",
+			})
+			return
+		}
+
+		res.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(res).Encode(model.WebResponse[string]{
+			Errors: "something error when getting data",
+		})
+		return
+	}
+
+	res.WriteHeader(http.StatusOK)
+	json.NewEncoder(res).Encode(model.WebResponse[[]ShowWalletResponse]{
 		Data: *result,
 	})
 }

@@ -43,7 +43,6 @@ func (w *WalletUsecase) ShowById(id string) (*ShowWalletResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	// fmt.Println(result)
 
 	return &ShowWalletResponse{
 		Id:          id,
@@ -53,6 +52,23 @@ func (w *WalletUsecase) ShowById(id string) (*ShowWalletResponse, error) {
 	}, nil
 }
 
-// func (w *WalletUsecase) ShowAll() (*[]Wallet, error) {
+func (w *WalletUsecase) ShowAll() (*[]ShowWalletResponse, error) {
+	results, err := w.WalletRepository.FindAll()
+	if err != nil {
+		return nil, err
+	}
 
-// }
+	responses := []ShowWalletResponse{}
+	for _, data := range *results {
+		response := ShowWalletResponse{
+			Id:          data.ID,
+			BankName:    data.BankName,
+			Description: data.Description,
+			Balance:     data.Balance,
+		}
+
+		responses = append(responses, response)
+	}
+
+	return &responses, nil
+}

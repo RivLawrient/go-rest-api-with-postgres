@@ -47,6 +47,7 @@ func (c *RouterConfig) Route() {
 
 	walletHandle := &MethodHandlers{
 		post: c.WalletController.HandleNewWallet,
+		get:  c.WalletController.HandleShowAll,
 	}
 	c.Routing.HandleFunc("/wallet", walletHandle.Handle)
 

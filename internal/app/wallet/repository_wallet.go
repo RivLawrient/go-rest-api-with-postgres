@@ -37,6 +37,29 @@ func (w *WalletRepository) FindById(id string) (*Wallet, error) {
 	return data, nil
 }
 
+func (w *WalletRepository) FindAll() (*[]Wallet, error) {
+	query := "SELECT id, bank_name, description, balance FROM wallet"
+	result, err := w.Db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	datas := []Wallet{}
+
+	for result.Next() {
+		data := Wallet{}
+		err := result.Scan(&data.ID, &data.BankName, &data.Description, &data.Balance)
+		if err != nil {
+			return nil, err
+		}
+		datas = append(datas, data)
+	}
+
+	if len(datas) == 0 {
+		return nil, sql.ErrNoRows
+	}
+	return &datas, nil
+}
+
 func (w *WalletRepository) DeleteById(id string) error {
 	query := "DELETE FROM wallet WHERE id=$1"
 	result, err := w.Db.Exec(query, id)
