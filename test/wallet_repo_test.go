@@ -22,7 +22,7 @@ func TestCreate(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func TestFindById(t *testing.T) {
+func TestFindByIdSuccess(t *testing.T) {
 	vp := TesViper()
 	db := config.GetConnection(vp)
 	req := wallet.NewWalletRequest{
@@ -40,6 +40,17 @@ func TestFindById(t *testing.T) {
 	assert.Equal(t, result.Description, req.Description)
 
 	fmt.Println(id, result.BankName, result.Description, result.Balance)
+}
+
+func TestFindByIdFail(t *testing.T) {
+	vp := TesViper()
+	db := config.GetConnection(vp)
+
+	result, err := wallet.NewWalletRepository(db).FindById("random")
+	assert.NotNil(t, err)
+	assert.Nil(t, result)
+
+	fmt.Println(err)
 }
 
 func TestDeleteByIdSuccess(t *testing.T) {

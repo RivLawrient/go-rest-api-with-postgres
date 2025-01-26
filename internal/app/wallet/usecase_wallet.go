@@ -37,3 +37,22 @@ func (w *WalletUsecase) RemoveWallet(id string) error {
 
 	return err
 }
+
+func (w *WalletUsecase) ShowById(id string) (*ShowWalletResponse, error) {
+	result, err := w.WalletRepository.FindById(id)
+	if err != nil {
+		return nil, err
+	}
+	// fmt.Println(result)
+
+	return &ShowWalletResponse{
+		Id:          id,
+		BankName:    result.BankName,
+		Description: result.Description,
+		Balance:     result.Balance,
+	}, nil
+}
+
+// func (w *WalletUsecase) ShowAll() (*[]Wallet, error) {
+
+// }

@@ -11,3 +11,10 @@ type NewWalletResponse struct {
 	Description string `json:"description"`
 	Balance     int64  `json:"balance"`
 }
+
+type ShowWalletResponse struct {
+	Id          string `json:"id"`
+	BankName    string `json:"bank_name"`
+	Description string `json:"description"`
+	Balance     int64  `json:"balance"`
+}

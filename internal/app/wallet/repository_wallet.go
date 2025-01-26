@@ -23,22 +23,20 @@ func (w *WalletRepository) Create(id string, request *NewWalletRequest) error {
 
 func (w *WalletRepository) FindById(id string) (*Wallet, error) {
 	query := "SELECT bank_name, description, balance FROM wallet WHERE id=$1"
-	result, err := w.Db.Query(query, id)
-	if err != nil {
-		return nil, err
+	result := w.Db.QueryRow(query, id)
+
+	if result.Err() != nil {
+		return nil, result.Err()
 	}
 
 	data := new(Wallet)
-
-	for result.Next() {
-
-		if err := result.Scan(&data.BankName, &data.Description, &data.Balance); err != nil {
-			return nil, err
-		}
-
+	if err := result.Scan(&data.BankName, &data.Description, &data.Balance); err != nil {
+		return nil, err
 	}
+
 	return data, nil
 }
+
 func (w *WalletRepository) DeleteById(id string) error {
 	query := "DELETE FROM wallet WHERE id=$1"
 	result, err := w.Db.Exec(query, id)

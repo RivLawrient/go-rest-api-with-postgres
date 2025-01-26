@@ -92,3 +92,32 @@ func (w *WalletController) HandleRemoveWallet(res http.ResponseWriter, req *http
 		Data: "success remove wallet",
 	})
 }
+
+func (w *WalletController) HandleShowById(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+
+	//membaca params setelah "/wallet/"
+	id := strings.Split(req.URL.Path, "/")[2]
+
+	result, err := w.WalletUsecase.ShowById(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			res.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(res).Encode(model.WebResponse[string]{
+				Errors: "id is not found",
+			})
+			return
+		}
+
+		res.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(res).Encode(model.WebResponse[string]{
+			Errors: "something error when remove data",
+		})
+		return
+	}
+
+	res.WriteHeader(http.StatusOK)
+	json.NewEncoder(res).Encode(model.WebResponse[ShowWalletResponse]{
+		Data: *result,
+	})
+}
