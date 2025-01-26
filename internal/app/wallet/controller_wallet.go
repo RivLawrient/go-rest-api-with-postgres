@@ -1,6 +1,7 @@
 package wallet
 
 import (
+	"database/sql"
 	"encoding/json"
 	"go-rest-api-with-postgres/internal/model"
 	"net/http"
@@ -60,5 +61,34 @@ func (w *WalletController) HandleNewWallet(res http.ResponseWriter, req *http.Re
 	res.WriteHeader(http.StatusOK)
 	json.NewEncoder(res).Encode(model.WebResponse[NewWalletResponse]{
 		Data: *result,
+	})
+}
+
+func (w *WalletController) HandleRemoveWallet(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+
+	//membaca params setelah "/wallet/"
+	id := strings.Split(req.URL.Path, "/")[2]
+
+	err := w.WalletUsecase.RemoveWallet(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			res.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(res).Encode(model.WebResponse[string]{
+				Errors: "id is not found",
+			})
+			return
+		}
+
+		res.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(res).Encode(model.WebResponse[string]{
+			Errors: "something error when remove data",
+		})
+		return
+	}
+
+	res.WriteHeader(http.StatusOK)
+	json.NewEncoder(res).Encode(model.WebResponse[string]{
+		Data: "success remove wallet",
 	})
 }

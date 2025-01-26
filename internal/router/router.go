@@ -50,4 +50,9 @@ func (c *RouterConfig) Route() {
 	}
 	c.Routing.HandleFunc("/wallet", walletHandle.Handle)
 
+	walletParamHandle := &MethodHandlers{
+		delete: c.WalletController.HandleRemoveWallet,
+	}
+	c.Routing.HandleFunc("/wallet/", walletParamHandle.Handle)
+
 }
