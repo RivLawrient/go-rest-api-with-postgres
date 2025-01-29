@@ -72,3 +72,20 @@ func (w *WalletUsecase) ShowAll() (*[]ShowWalletResponse, error) {
 
 	return &responses, nil
 }
+
+func (w *WalletUsecase) EditWalletById(id string, request *EditWalletRequest) (*EditWalletResponse, error) {
+	if _, err := w.WalletRepository.FindById(id); err != nil {
+		return nil, err
+	}
+
+	err := w.WalletRepository.UpdateById(id, request)
+	if err != nil {
+		return nil, err
+	}
+
+	return &EditWalletResponse{
+		Id:          id,
+		BankName:    *request.BankName,
+		Description: request.Description,
+	}, nil
+}

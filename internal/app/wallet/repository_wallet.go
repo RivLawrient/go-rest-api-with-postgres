@@ -73,3 +73,10 @@ func (w *WalletRepository) DeleteById(id string) error {
 
 	return err
 }
+
+func (w *WalletRepository) UpdateById(id string, request *EditWalletRequest) error {
+	query := "UPDATE wallet SET bank_name = $1, description=$2 WHERE id=$3"
+	_, err := w.Db.Exec(query, request.BankName, request.Description, id)
+
+	return err
+}
