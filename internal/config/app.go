@@ -2,6 +2,7 @@ package config
 
 import (
 	"database/sql"
+	"go-rest-api-with-postgres/internal/app/income"
 	"go-rest-api-with-postgres/internal/app/wallet"
 	"go-rest-api-with-postgres/internal/router"
 	"net/http"
@@ -18,9 +19,14 @@ func Register(cfg *RegisterConfig) {
 	walletUsecase := wallet.NewWalletUsecase(walletRepository)
 	walletController := wallet.NewWalletController(walletUsecase)
 
+	incomeRepository := income.NewIncomeRepository(cfg.Db)
+	incomeUsecase := income.NewIncomeUsecase(incomeRepository, walletRepository)
+	incomeController := income.NewIncomeController(incomeUsecase)
+
 	config := router.RouterConfig{
 		Routing:          cfg.App,
 		WalletController: walletController,
+		IncomeController: incomeController,
 	}
 
 	config.Route()

@@ -47,7 +47,7 @@ func (w *WalletRepository) FindAll() (*[]Wallet, error) {
 
 	for result.Next() {
 		data := Wallet{}
-		err := result.Scan(&data.ID, &data.BankName, &data.Description, &data.Balance)
+		err := result.Scan(&data.Id, &data.BankName, &data.Description, &data.Balance)
 		if err != nil {
 			return nil, err
 		}
@@ -77,6 +77,13 @@ func (w *WalletRepository) DeleteById(id string) error {
 func (w *WalletRepository) UpdateById(id string, request *EditWalletRequest) error {
 	query := "UPDATE wallet SET bank_name = $1, description=$2 WHERE id=$3"
 	_, err := w.Db.Exec(query, request.BankName, request.Description, id)
+
+	return err
+}
+
+func (w *WalletRepository) IncrementBalance(id string, amount int64) error {
+	query := "UPDATE wallet SET balance = balance + $1 WHERE id=$2"
+	_, err := w.Db.Exec(query, amount, id)
 
 	return err
 }

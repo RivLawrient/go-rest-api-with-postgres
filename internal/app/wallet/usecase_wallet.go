@@ -60,14 +60,14 @@ func (w *WalletUsecase) ShowAll() (*[]ShowWalletResponse, error) {
 
 	responses := []ShowWalletResponse{}
 	for _, data := range *results {
-		response := ShowWalletResponse{
-			Id:          data.ID,
+		response := &ShowWalletResponse{
+			Id:          data.Id,
 			BankName:    data.BankName,
 			Description: data.Description,
 			Balance:     data.Balance,
 		}
 
-		responses = append(responses, response)
+		responses = append(responses, *response)
 	}
 
 	return &responses, nil
