@@ -87,3 +87,10 @@ func (w *WalletRepository) IncrementBalance(id string, amount int64) error {
 
 	return err
 }
+
+func (w *WalletRepository) DecrementBalance(id string, amount int64) error {
+	query := "UPDATE wallet SET balance = balance - $1 WHERE id=$2"
+	_, err := w.Db.Exec(query, amount, id)
+
+	return err
+}
