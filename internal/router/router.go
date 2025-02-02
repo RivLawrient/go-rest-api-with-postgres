@@ -3,6 +3,7 @@ package router
 import (
 	"encoding/json"
 	"fmt"
+	"go-rest-api-with-postgres/internal/app/expense"
 	"go-rest-api-with-postgres/internal/app/income"
 	"go-rest-api-with-postgres/internal/app/wallet"
 	"go-rest-api-with-postgres/internal/model"
@@ -29,18 +30,20 @@ func (mh *MethodHandlers) Handle(w http.ResponseWriter, r *http.Request) {
 	if handler != nil {
 		handler(w, r)
 	} else {
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		json.NewEncoder(w).Encode(model.WebResponse[string]{
-			Errors: fmt.Sprintf("method %s is not found", r.Method),
+			Errors: fmt.Sprintf(" method %s %s is not found", r.Method, r.URL.Path),
 		})
 	}
 }
 
 type RouterConfig struct {
-	Routing          *http.ServeMux
-	WalletController *wallet.WalletController
-	IncomeController *income.IncomeController
+	Routing           *http.ServeMux
+	WalletController  *wallet.WalletController
+	IncomeController  *income.IncomeController
+	ExpenseController *expense.ExpenseController
 }
 
 // membungkus semua endpoint yang dibuat.
@@ -71,4 +74,9 @@ func (c *RouterConfig) Route() {
 		delete: c.IncomeController.HandleDeleteById,
 	}
 	c.Routing.HandleFunc("/income/", incomeParamHandle.Handle)
+
+	expenseHandle := &MethodHandlers{
+		post: c.ExpenseController.HandleNew,
+	}
+	c.Routing.HandleFunc("/expense", expenseHandle.Handle)
 }

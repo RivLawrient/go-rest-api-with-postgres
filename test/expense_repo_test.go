@@ -19,7 +19,7 @@ func TestAddExpense(t *testing.T) {
 		Item:     "somethi",
 		Quantity: 12,
 		Price:    20,
-		WalletId: wallet,
+		WalletId: &wallet,
 	}
 
 	err := expense.NewExpenseRepository(db).Add(uuid.New().String(), &req)
