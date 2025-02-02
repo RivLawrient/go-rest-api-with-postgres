@@ -61,8 +61,14 @@ func (c *RouterConfig) Route() {
 	c.Routing.HandleFunc("/wallet/", walletParamHandle.Handle)
 
 	incomeHandle := &MethodHandlers{
-		post: c.IncomeController.HandleNewIncome,
+		post: c.IncomeController.HandleNew,
+		get:  c.IncomeController.HandleShowAll,
 	}
 	c.Routing.HandleFunc("/income", incomeHandle.Handle)
 
+	incomeParamHandle := &MethodHandlers{
+		get:    c.IncomeController.HandleShowById,
+		delete: c.IncomeController.HandleDeleteById,
+	}
+	c.Routing.HandleFunc("/income/", incomeParamHandle.Handle)
 }

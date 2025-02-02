@@ -21,7 +21,7 @@ func NewIncomeUsecase(incomeRepository *IncomeRepository, walletRepository *wall
 	}
 }
 
-func (i *IncomeUsecase) NewIncome(request *NewIncomeRequest) (*NewIncomeResponse, error) {
+func (i *IncomeUsecase) New(request *NewIncomeRequest) (*NewIncomeResponse, error) {
 
 	//check wallet_id
 	if _, err := i.WalletRepository.FindById(*request.WalletId); err != nil {
@@ -51,4 +51,52 @@ func (i *IncomeUsecase) NewIncome(request *NewIncomeRequest) (*NewIncomeResponse
 		WalletId:  *request.WalletId,
 		CreatedAt: time.Now(),
 	}, nil
+}
+func (i *IncomeUsecase) ShowById(id string) (*ShowIncomeResponse, error) {
+	result, err := i.IncomeRepository.FindById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ShowIncomeResponse{
+		Id:        result.Id,
+		Source:    result.Source,
+		Amount:    result.Amount,
+		WalletId:  result.WalletId,
+		CreatedAt: result.CreatedAt,
+	}, nil
+}
+
+func (i *IncomeUsecase) ShowALl() (*[]ShowIncomeResponse, error) {
+	result, err := i.IncomeRepository.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	responses := []ShowIncomeResponse{}
+
+	for _, data := range *result {
+		response := &ShowIncomeResponse{
+			Id:        data.Id,
+			Source:    data.Source,
+			Amount:    data.Amount,
+			WalletId:  data.WalletId,
+			CreatedAt: data.CreatedAt,
+		}
+
+		responses = append(responses, *response)
+	}
+
+	return &responses, nil
+}
+
+func (i *IncomeUsecase) DeleteById(id string) error {
+	//check wallet_id
+	if _, err := i.IncomeRepository.FindById(id); err != nil {
+		return err
+	}
+
+	err := i.IncomeRepository.RemoveById(id)
+
+	return err
 }

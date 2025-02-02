@@ -15,3 +15,11 @@ type NewIncomeResponse struct {
 	WalletId  string    `json:"wallet_id"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+type ShowIncomeResponse struct {
+	Id        string    `json:"id"`
+	Source    string    `json:"source"`
+	Amount    int64     `json:"amount"`
+	WalletId  string    `json:"wallet_id"`
+	CreatedAt time.Time `json:"created_at"`
+}

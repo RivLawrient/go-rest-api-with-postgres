@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"go-rest-api-with-postgres/internal/model"
 	"net/http"
+	"strings"
 )
 
 type IncomeController struct {
@@ -17,7 +18,7 @@ func NewIncomeController(incomeUsecase *IncomeUsecase) *IncomeController {
 	}
 }
 
-func (i *IncomeController) HandleNewIncome(res http.ResponseWriter, req *http.Request) {
+func (i *IncomeController) HandleNew(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 
 	data := &NewIncomeRequest{}
@@ -38,7 +39,7 @@ func (i *IncomeController) HandleNewIncome(res http.ResponseWriter, req *http.Re
 		return
 	}
 
-	result, err := i.IncomeUsecase.NewIncome(data)
+	result, err := i.IncomeUsecase.New(data)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			res.WriteHeader(http.StatusBadRequest)
@@ -66,5 +67,89 @@ func (i *IncomeController) HandleNewIncome(res http.ResponseWriter, req *http.Re
 	res.WriteHeader(http.StatusOK)
 	json.NewEncoder(res).Encode(model.WebResponse[NewIncomeResponse]{
 		Data: *result,
+	})
+}
+
+func (i *IncomeController) HandleShowById(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+
+	//membaca params setelah "/wallet/"
+	id := strings.Split(req.URL.Path, "/")[2]
+
+	result, err := i.IncomeUsecase.ShowById(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			res.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(res).Encode(model.WebResponse[string]{
+				Errors: "id is not found",
+			})
+			return
+		}
+
+		res.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(res).Encode(model.WebResponse[string]{
+			Errors: "something error when getting data",
+		})
+		return
+	}
+
+	res.WriteHeader(http.StatusOK)
+	json.NewEncoder(res).Encode(model.WebResponse[ShowIncomeResponse]{
+		Data: *result,
+	})
+}
+
+func (i *IncomeController) HandleShowAll(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+
+	result, err := i.IncomeUsecase.ShowALl()
+	if err != nil {
+		if err == sql.ErrNoRows {
+			res.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(res).Encode(model.WebResponse[string]{
+				Errors: "data is not found",
+			})
+			return
+		}
+
+		res.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(res).Encode(model.WebResponse[string]{
+			Errors: "something error when getting data",
+		})
+		return
+	}
+
+	res.WriteHeader(http.StatusOK)
+	json.NewEncoder(res).Encode(model.WebResponse[[]ShowIncomeResponse]{
+		Data: *result,
+	})
+}
+
+func (i *IncomeController) HandleDeleteById(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+
+	//membaca params setelah "/wallet/"
+	id := strings.Split(req.URL.Path, "/")[2]
+
+	err := i.IncomeUsecase.DeleteById(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			res.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(res).Encode(model.WebResponse[string]{
+				Errors: "id is not found",
+			})
+			return
+		}
+
+		res.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(res).Encode(model.WebResponse[string]{
+			Errors: "something error when remove data",
+		})
+		return
+	}
+
+	res.WriteHeader(http.StatusOK)
+	json.NewEncoder(res).Encode(model.WebResponse[string]{
+		Data: "success remove income",
 	})
 }
