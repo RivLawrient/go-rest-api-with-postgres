@@ -66,3 +66,28 @@ func (e *ExpenseRepository) RemoveById(id string) error {
 
 	return err
 }
+
+func (e *ExpenseRepository) FindAllByWalletId(idWallet string) (*[]Expense, error) {
+	query := "SELECT id, item, quantity, price, total_price, wallet_id, created_at FROM expense WHERE wallet_id=$1"
+	result, err := e.Db.Query(query, idWallet)
+	if err != nil {
+		return nil, err
+	}
+
+	list := []Expense{}
+	for result.Next() {
+		data := Expense{}
+		err := result.Scan(&data.Id, &data.Item, &data.Quantity, &data.Price, &data.TotalPrice, &data.WalletId, &data.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		list = append(list, data)
+	}
+
+	if len(list) == 0 {
+		return nil, sql.ErrNoRows
+	}
+
+	return &list, nil
+}

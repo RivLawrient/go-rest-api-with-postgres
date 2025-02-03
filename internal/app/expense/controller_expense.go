@@ -65,6 +65,14 @@ func (e *ExpenseController) HandleNew(res http.ResponseWriter, req *http.Request
 			return
 		}
 
+		if err.Error() == "minus balance" {
+			res.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(res).Encode(model.WebResponse[string]{
+				Errors: "your wallet balance not enough",
+			})
+			return
+		}
+
 		res.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(res).Encode(model.WebResponse[string]{
 			Errors: "something error when create data",

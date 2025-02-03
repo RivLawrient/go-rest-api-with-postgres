@@ -43,3 +43,13 @@ func TestFindAllExpense(t *testing.T) {
 	}
 	assert.Nil(t, err)
 }
+
+func TestFindAllExpenseByWallet(t *testing.T) {
+	vp := TesViper()
+	db := config.GetConnection(vp)
+	result, err := expense.NewExpenseRepository(db).FindAllByWalletId("f0c58824-58f2-4c04-8a5e-f30ac3e69d4d")
+	for _, data := range *result {
+		log.Println(data)
+	}
+	assert.Nil(t, err)
+}

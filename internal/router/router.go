@@ -3,6 +3,7 @@ package router
 import (
 	"encoding/json"
 	"fmt"
+	transaction "go-rest-api-with-postgres/internal/app/Transaction"
 	"go-rest-api-with-postgres/internal/app/expense"
 	"go-rest-api-with-postgres/internal/app/income"
 	"go-rest-api-with-postgres/internal/app/wallet"
@@ -40,10 +41,11 @@ func (mh *MethodHandlers) Handle(w http.ResponseWriter, r *http.Request) {
 }
 
 type RouterConfig struct {
-	Routing           *http.ServeMux
-	WalletController  *wallet.WalletController
-	IncomeController  *income.IncomeController
-	ExpenseController *expense.ExpenseController
+	Routing               *http.ServeMux
+	WalletController      *wallet.WalletController
+	IncomeController      *income.IncomeController
+	ExpenseController     *expense.ExpenseController
+	TransactionController *transaction.TransactionController
 }
 
 // membungkus semua endpoint yang dibuat.
@@ -79,4 +81,9 @@ func (c *RouterConfig) Route() {
 		post: c.ExpenseController.HandleNew,
 	}
 	c.Routing.HandleFunc("/expense", expenseHandle.Handle)
+
+	transactionParamHandle := &MethodHandlers{
+		get: c.TransactionController.HandleDetail,
+	}
+	c.Routing.HandleFunc("/wallet/transaction/", transactionParamHandle.Handle)
 }

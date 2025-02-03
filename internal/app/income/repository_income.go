@@ -38,7 +38,7 @@ func (i *IncomeRepository) FindById(id string) (*Income, error) {
 }
 
 func (i *IncomeRepository) FindAll() (*[]Income, error) {
-	query := "SELECT id, source, amount, wallet_id, created_at  FROM income"
+	query := "SELECT id, source, amount, wallet_id, created_at FROM income"
 	result, err := i.Db.Query(query)
 	if err != nil {
 		return nil, err
@@ -66,4 +66,28 @@ func (i *IncomeRepository) RemoveById(id string) error {
 	_, err := i.Db.Exec(query, id)
 
 	return err
+}
+
+func (i *IncomeRepository) FindAllByWalleId(idWallet string) (*[]Income, error) {
+	query := "SELECT id, source, amount, wallet_id, created_at FROM income WHERE wallet_id=$1"
+	result, err := i.Db.Query(query, idWallet)
+	if err != nil {
+		return nil, err
+	}
+	list := []Income{}
+	for result.Next() {
+		data := Income{}
+		err := result.Scan(&data.Id, &data.Source, &data.Amount, &data.WalletId, &data.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		list = append(list, data)
+	}
+
+	if len(list) == 0 {
+		return nil, sql.ErrNoRows
+	}
+
+	return &list, nil
 }

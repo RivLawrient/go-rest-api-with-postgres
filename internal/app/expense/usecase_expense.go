@@ -22,7 +22,8 @@ func NewExpenseUsecase(expenseRepository *ExpenseRepository, walletRepository *w
 }
 
 func (e *ExpenseUsecase) New(request *NewExpenseRequest) (*NewExpenseResponse, error) {
-	if _, err := e.WalletRepository.FindById(*request.WalletId); err != nil {
+	wallet, err := e.WalletRepository.FindById(*request.WalletId)
+	if err != nil {
 		return nil, err
 	}
 
@@ -34,12 +35,20 @@ func (e *ExpenseUsecase) New(request *NewExpenseRequest) (*NewExpenseResponse, e
 		return nil, errors.New("minus price")
 	}
 
+	totalPrice := request.Price * int64(request.Quantity)
+	if (wallet.Balance - totalPrice) <= 0 {
+		return nil, errors.New("minus balance")
+	}
+
 	id := uuid.New().String()
 	request.Item = strings.TrimSpace(request.Item)
 	if err := e.ExpenseRepository.Add(id, request); err != nil {
 		return nil, err
 	}
 
+	if err := e.WalletRepository.DecrementBalance(*request.WalletId, totalPrice); err != nil {
+		return nil, err
+	}
 	return &NewExpenseResponse{
 		Id:         id,
 		Item:       request.Item,
@@ -50,3 +59,4 @@ func (e *ExpenseUsecase) New(request *NewExpenseRequest) (*NewExpenseResponse, e
 		CreatedAt:  time.Now(),
 	}, nil
 }
+

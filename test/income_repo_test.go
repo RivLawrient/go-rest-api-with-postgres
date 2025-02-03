@@ -48,3 +48,11 @@ func TestFindAllIncome(t *testing.T) {
 	log.Println(result)
 	assert.Nil(t, err)
 }
+
+func TestFindAllByWalletIdIncome(t *testing.T) {
+	vp := TesViper()
+	db := config.GetConnection(vp)
+	result, err := income.NewIncomeRepository(db).FindAllByWalleId("f0c58824-58f2-4c04-8a5e-f30ac3e69d4d")
+	log.Println(result)
+	assert.Nil(t, err)
+}
