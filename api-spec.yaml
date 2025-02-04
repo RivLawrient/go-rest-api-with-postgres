@@ -5,7 +5,7 @@ info:
   description: API untuk manajemen dompet digital, transaksi income, dan expense
 servers:
   - url: http://localhost:8080
-    description: Local development server
+    description: Local dev server
 
 tags:
   - name: Wallet
