@@ -1,0 +1,323 @@
+openapi: 3.0.0
+info:
+  title: Wallet Management API
+  version: 1.0.0
+  description: API untuk manajemen dompet digital, transaksi income, dan expense
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Wallet
+    description: Operasi terkait manajemen dompet
+  - name: Income
+    description: Operasi terkait transaksi pemasukan
+  - name: Expense
+    description: Operasi terkait transaksi pengeluaran
+  - name: Transaction
+    description: Operasi terkait transaksi dompet
+
+paths:
+  /wallet:
+    get:
+      tags: [Wallet]
+      summary: List semua dompet
+      responses:
+        '200':
+          description: Daftar dompet berhasil didapatkan
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wallet'
+    post:
+      tags: [Wallet]
+      summary: Buat dompet baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bank_name:
+                  type: string
+              example:
+                bank_name: "BCA"
+      responses:
+        '201':
+          description: Dompet berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+
+  /wallet/{id}:
+    get:
+      tags: [Wallet]
+      summary: Dapatkan detail dompet by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detail dompet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+    put:
+      tags: [Wallet]
+      summary: Update dompet by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bank_name:
+                  type: string
+              example:
+                bank_name: "BCA"
+      responses:
+        '200':
+          description: Dompet berhasil diupdate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+    delete:
+      tags: [Wallet]
+      summary: Hapus dompet by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Dompet berhasil dihapus
+
+  /income:
+    get:
+      tags: [Income]
+      summary: List semua transaksi income
+      responses:
+        '200':
+          description: Daftar income berhasil didapatkan
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Income'
+    post:
+      tags: [Income]
+      summary: Buat transaksi income baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                wallet_id:
+                  type: string
+                  format: uuid
+              example:
+                amount: -2
+                wallet_id: "f0c58824-58f2-4c04-8a5e-f30ac3e69d4d"
+      responses:
+        '201':
+          description: Transaksi income berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+
+  /income/{id}:
+    get:
+      tags: [Income]
+      summary: Dapatkan detail income by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detail transaksi income
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Income'
+    delete:
+      tags: [Income]
+      summary: Hapus transaksi income by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Income berhasil dihapus
+
+  /expense:
+    post:
+      tags: [Expense]
+      summary: Buat transaksi expense baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                price:
+                  type: number
+                wallet_id:
+                  type: string
+                  format: uuid
+              example:
+                quantity: 1
+                price: 2
+                wallet_id: "e8624add-5577-4c29-b47d-6c5dcf4bdcef"
+      responses:
+        '201':
+          description: Transaksi expense berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+
+  /wallet/transaction/{walletId}:
+    get:
+      tags: [Transaction]
+      summary: Dapatkan detail transaksi dompet
+      parameters:
+        - in: path
+          name: walletId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detail transaksi dompet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionDetails'
+
+components:
+  schemas:
+    Wallet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        bank_name:
+          type: string
+        balance:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+      example:
+        id: "f0c58824-58f2-4c04-8a5e-f30ac3e69d4d"
+        bank_name: "BCA"
+        balance: 1000.50
+        created_at: "2025-02-04T13:41:12.813Z"
+
+    Income:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        amount:
+          type: number
+        wallet_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+      example:
+        id: "9b61fb4f-a264-43b8-ae85-abc58dc17b89"
+        amount: -2
+        wallet_id: "f0c58824-58f2-4c04-8a5e-f30ac3e69d4d"
+        created_at: "2025-02-04T13:41:12.813Z"
+
+    Expense:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+        price:
+          type: number
+        total:
+          type: number
+        wallet_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+      example:
+        id: "e8624add-5577-4c29-b47d-6c5dcf4bdcef"
+        quantity: 1
+        price: 2
+        total: 2
+        wallet_id: "e8624add-5577-4c29-b47d-6c5dcf4bdcef"
+        created_at: "2025-02-04T13:41:12.813Z"
+
+    TransactionDetails:
+      type: object
+      properties:
+        wallet_id:
+          type: string
+          format: uuid
+        transactions:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Income'
+              - $ref: '#/components/schemas/Expense'
+        total_balance:
+          type: number
+      example:
+        wallet_id: "f0c58824-58f2-4c04-8a5e-f30ac3e69d4d"
+        transactions:
+          - id: "9b61fb4f-a264-43b8-ae85-abc58dc17b89"
+            amount: -2
+            created_at: "2025-02-04T13:41:12.813Z"
+        total_balance: 998.50
