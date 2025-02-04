@@ -1,7 +1,7 @@
 # GO RESTful API with Postgressql
 
 ## Description
-Build a RESTful API for monitoring money using Golang and implement PostgreSQL as the database.
+Build a RESTful API for **monitoring money** using Golang and implement PostgreSQL as the database.
 
 ## Configuration
 All configuration is in `.env.example` file, save as `.env`
